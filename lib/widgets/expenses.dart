@@ -1,7 +1,8 @@
-import 'package:expense_tracker/widgets/expenses_list/expense_list.dart';
-import 'package:expense_tracker/models/expense.dart';
 import 'package:expense_tracker/widgets/new_expense.dart';
 import 'package:flutter/material.dart';
+
+import 'package:expense_tracker/widgets/expenses_list/expenses_list.dart';
+import 'package:expense_tracker/models/expense.dart';
 
 class Expenses extends StatefulWidget {
   const Expenses({super.key});
@@ -10,28 +11,42 @@ class Expenses extends StatefulWidget {
   State<Expenses> createState() {
     return _ExpensesState();
   }
-
 }
 
 class _ExpensesState extends State<Expenses> {
   final List<Expense> _registeredExpenses = [
-    Expense(date: DateTime.now(), 
-    title: 'Flutter Course', 
-    amount: 19.99, 
-    category: Category.work
+    Expense(
+      title: 'Flutter Course',
+      amount: 19.99,
+      date: DateTime.now(),
+      category: Category.work,
     ),
-    Expense(date: DateTime.now(), 
-    title: 'Cinema', 
-    amount: 15.69, 
-    category: Category.leisure
+    Expense(
+      title: 'Cinema',
+      amount: 15.69,
+      date: DateTime.now(),
+      category: Category.leisure,
     ),
   ];
 
   void _openAddExpenseOverlay() {
     showModalBottomSheet(
-      context: context, 
-      builder: (ctx) => const NewExpense()
-      );
+      isScrollControlled: true,
+      context: context,
+      builder: (ctx) => NewExpense(onAddExpense: _addExpense),
+    );
+  }
+
+  void _addExpense(Expense expense) {
+    setState(() {
+      _registeredExpenses.add(expense);
+    });
+  }
+
+  void _removeExpense(Expense expense) {
+    setState(() {
+      _registeredExpenses.remove(expense);
+    });
   }
 
   @override
@@ -50,11 +65,13 @@ class _ExpensesState extends State<Expenses> {
         children: [
           const Text('The chart'),
           Expanded(
-            child: ExpenseList(expenses: _registeredExpenses),
-          )
+            child: ExpensesList(
+              expenses: _registeredExpenses,
+              
+            ),
+          ),
         ],
-    ),
+      ),
     );
   }
-
 }
